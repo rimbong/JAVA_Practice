@@ -1,0 +1,8 @@
+/.metadata/
+Servers/
+/**/.classpath
+.vscode/
+project/bin/
+project/vue/package.json
+project/vue/package-lock.json
+project/.settings/

@@ -13,6 +13,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,7 +51,7 @@ l
 public class Project {
 
 	public static void main(String[] args) {
-		test4();
+		test7();
 	}
 
 /*  #### 1. 날짜/시간 파싱 및 포맷팅
@@ -350,4 +351,35 @@ public class Project {
         ZonedDateTime time2 = ZonedDateTime.now(ZoneId.of(zoneId2));
         return ChronoUnit.HOURS.between(time2, time1);
     }
+
+    // Calendar UI - 첫주 일요일  부터 마지막주 토욜까지 나온다.
+    public static void test7(){
+        List<LocalDate> days = getCalendarDays(2025, 4);
+        days.forEach(date -> {
+            int weekday = date.getDayOfWeek().getValue() % 7 + 1; // 1=Sunday, ..., 7=Saturday
+            System.out.printf("%s (Weekday: %d)%n", date, weekday);
+        });
+    }
+
+    public static List<LocalDate> getCalendarDays(int year, int month) {
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("Month must be between 1 and 12");
+        }
+
+        List<LocalDate> days = new ArrayList<>();
+        LocalDate startDate = LocalDate.of(year, month, 1)
+                .with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.SUNDAY));
+        LocalDate endDate = LocalDate.of(year, month, 1)
+                .plusMonths(1)
+                .with(TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SATURDAY));
+
+        LocalDate current = startDate;
+        while (!current.isAfter(endDate)) {
+            days.add(current);
+            current = current.plusDays(1);
+        }
+
+        return days;
+    }
+
 }
